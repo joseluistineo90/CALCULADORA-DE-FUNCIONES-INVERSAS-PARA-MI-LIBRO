@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<!-- saved from url=(0074)file:///C:/Users/Laptop%20Win7/Downloads/inverse_calculator_v03%20(1).html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Funciones Inversas v0.3 - Dr. Pedro Alson</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .calculator {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #ffffff, #e8e8e8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 2px solid #d1d5db;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .developer {
+            color: #059669;
+            font-size: 14px;
+            font-style: italic;
+            font-weight: bold;
+        }
+        
+        .controls-section {
+            background: rgba(59,130,246,0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .controls-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .control-input, .variable-selector select {
+            background: #ffffff;
+            color: #1f2937;
+            border: 2px solid #9ca3af;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .control-input:focus, .variable-selector select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        
+        .equation-display {
+            text-align: center;
+            font-size: 18px;
+            color: #dc2626;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(220,38,38,0.1);
+            border-radius: 12px;
+            border: 2px solid #dc2626;
+            font-weight: bold;
+        }
+        
+        .calculator-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(243,244,246,0.5);
+            border-radius: 15px;
+            border: 1px solid #d1d5db;
+        }
+        
+        .calculator-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .screen {
+            width: 280px;
+            height: 55px;
+            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            border: 3px solid #475569;
+            border-radius: 30px;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .screen.last-screen {
+            width: 350px; /* Más ancha para la última pantalla */
+        }
+        
+        .screen-left, .screen-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .screen.last-screen .screen-left {
+            flex: 2; /* Más espacio para la expresión completa */
+        }
+        
+        .screen-divider {
+            width: 2px;
+            background: #475569;
+            height: 100%;
+        }
+        
+        .screen input {
+            background: transparent;
+            border: none;
+            color: #1f2937;
+            text-align: center;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            width: 95%;
+            outline: none;
+            font-weight: bold;
+            cursor: text;
+        }
+        
+        .screen input:focus {
+            background: rgba(59,130,246,0.1);
+            border-radius: 4px;
+        }
+        
+        .screen input::placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .screen input.result-field {
+            background: rgba(34,197,94,0.1);
+            border-radius: 4px;
+        }
+        
+        .screen input.final-result {
+            background: rgba(220,38,38,0.1);
+            border-radius: 4px;
+        }
+        
+        .screen input        .solution-field {
+            background: rgba(34,197,94,0.15); /* Verde claro suave para la solución */
+            border-radius: 4px;
+        }
+        
+        .instructions {
+            background: rgba(124,58,237,0.1);
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #5b21b6;
+            font-weight: 600;
+        }
+        
+        .key {
+            width: 110px;
+            height: 35px;
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            border: 2px solid #1d4ed8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 11px;
+            color: white;
+            font-weight: bold;
+            margin: 0 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 2px;
+        }
+        
+        .key:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59,130,246,0.3);
+        }
+        
+        .key.inverse {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            border-color: #991b1b;
+        }
+        
+        .key.inverse:hover {
+            box-shadow: 0 6px 15px rgba(220,38,38,0.3);
+        }
+        
+        .key input {
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: center;
+            width: 100%;
+            font-size: 11px;
+            font-weight: bold;
+            outline: none;
+        }
+        
+        .key input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .main-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 20px;
+            background: linear-gradient(145deg, #059669, #047857);
+            border: 2px solid #065f46;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(5,150,105,0.3);
+        }
+        
+        .control-btn.add {
+            background: linear-gradient(145deg, #7c3aed, #6d28d9);
+            border-color: #5b21b6;
+        }
+        
+        .control-btn.add:hover {
+            box-shadow: 0 6px 15px rgba(124,58,237,0.3);
+        }
+        
+        .control-btn.remove {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            border-color: #991b1b;
+        }
+        
+        .control-btn.remove:hover {
+            box-shadow: 0 6px 15px rgba(220,38,38,0.3);
+        }
+        
+        .error {
+            color: #dc2626 !important;
+            font-weight: bold;
+            background-color: rgba(220,38,38,0.1) !important;
+        }
+        
+        .info {
+            background: rgba(16,185,129,0.1);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #047857;
+            font-weight: 600;
+        }
+        
+        .screen-counter {
+            position: absolute;
+            top: -8px;
+            right: 8px;
+            background: #6366f1;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .symbol-palette {
+            background: rgba(124,58,237,0.1);
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .symbol-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .symbol-btn {
+            background: linear-gradient(145deg, #6366f1, #4f46e5);
+            border: 2px solid #4338ca;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 45px;
+            text-align: center;
+            user-select: none;
+        }
+        
+        .symbol-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(99,102,241,0.3);
+            background: linear-gradient(145deg, #7c3aed, #6d28d9);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">
+            <h1 class="title">Calculadora de Funciones Inversas v0.3</h1>
+            <div class="subtitle">Basado en el método del Dr. Pedro Alson - Matemáticas 1</div>
+            <div class="developer">Elaborado por el Desarrollador José Luis Tineo Castro</div>
+        </div>
+        
+        <div class="instructions">
+            📝 <strong>Instrucciones:</strong> Edita las funciones (teclas azules). En la última pantalla coloca la expresión completa del lado izquierdo y el valor final del lado derecho. 
+            Presiona "Calcular Hacia Arriba" para obtener las funciones inversas y la solución.<br>
+            <strong>Ejemplos de funciones:</strong> sqrt ( ), cos ( ), ln ( ), e^ ( ), ( ) ^2, ( ) +7.5, ( ) -3.14, ( ) *2.71, ( ) /1.41, 9.8/ ( ), ( ) ^-1, ( ) ^3, cbrt ( )
+            <br><strong>Usa el botón "🔣 Símbolos" para insertar funciones fácilmente</strong>
+        </div>
+        
+        <div class="info">
+            Esta calculadora permite resolver ecuaciones complejas usando funciones y sus inversas.<br>
+            Ejemplo editable: cos⁻¹(cos(sen(sen⁻¹(z)))) = -0.2
+        </div>
+        
+        <div class="controls-section">
+            <div class="controls-row">
+                <div class="control-group">
+                    <label>Variable:</label>
+                    <select id="variable" class="control-input">
+                        <option value="z">z</option>
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="n">n</option>
+                        <option value="t">t</option>
+                        <option value="w">w</option>
+                        <option value="u">u</option>
+                        <option value="v">v</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>Pantallas:</label>
+                    <input type="number" id="screenCount" class="control-input" value="5" min="2" max="10">
+                </div>
+                
+                <div class="control-group">
+                    <label>Resultado final:</label>
+                    <input type="text" id="finalResult" class="control-input" value="-0.2" placeholder="0">
+                </div>
+                
+                <div class="control-group">
+                    <button class="control-btn add" onclick="toggleSymbolPalette()">🔣 Símbolos</button>
+                </div>
+            </div>
+            
+            <div class="controls-row">
+                <button class="control-btn add" onclick="addScreen()">+ Agregar Pantalla</button>
+                <button class="control-btn remove" onclick="removeScreen()">- Quitar Pantalla</button>
+                <button class="control-btn" onclick="regenerateCalculator()">🔄 Regenerar</button>
+            </div>
+            
+            <!-- Paleta de símbolos -->
+            <div id="symbolPalette" class="symbol-palette" style="display: none;">
+                <div class="symbol-row">
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;√ ( )&#39;)">√ ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;∛ ( )&#39;)">∛ ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) ^2&#39;)">x²</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) ^3&#39;)">x³</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) ^-1&#39;)">x⁻¹</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;ln ( )&#39;)">ln ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;e^ ( )&#39;)">e^x</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;log ( )&#39;)">log ( )</span>
+                </div>
+                <div class="symbol-row">
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;sen ( )&#39;)">sen ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;cos ( )&#39;)">cos ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;tan ( )&#39;)">tan ( )</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;sen^-1 ( )&#39;)">sen⁻¹</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;cos^-1 ( )&#39;)">cos⁻¹</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;tan^-1 ( )&#39;)">tan⁻¹</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;abs ( )&#39;)">|x|</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;- ( )&#39;)">-x</span>
+                </div>
+                <div class="symbol-row">
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) +&#39;)">x+</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) -&#39;)">x-</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) *&#39;)">x×</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;( ) /&#39;)">x÷</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;/ ( )&#39;)">÷x</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;π&#39;)">π</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;∅&#39;)">∅</span>
+                    <span class="symbol-btn" onclick="insertSymbol(&#39;ERROR&#39;)">ERROR</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="equation-display">
+            <input type="text" id="equationDisplay" value="cos⁻¹(cos(sen(sen⁻¹(z)))) = -0.2" placeholder="Escribe aquí tu ecuación..." style="background:transparent; border:none; color:#dc2626; font-size:18px; font-weight:bold; text-align:center; width:100%; outline:none;">
+        </div>
+        
+        <div class="calculator-grid" id="calculatorGrid"><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">1</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen1_left" value="z" placeholder="variable" readonly="">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen1_right" value="" placeholder="solución" class="solution-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func1" value="" placeholder="ej: sen()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse1" value="" placeholder="se calcula" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">2</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen2_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen2_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func2" value="" placeholder="ej: sen()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse2" value="" placeholder="se calcula" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">3</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen3_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen3_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func3" value="" placeholder="ej: sen()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse3" value="" placeholder="se calcula" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">4</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen4_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen4_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func4" value="" placeholder="ej: sen()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse4" value="" placeholder="se calcula" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen last-screen">
+                    <div class="screen-counter">5</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen5_left" value="" placeholder="expresión completa">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen5_right" value="" placeholder="resultado" class="final-result">
+                    </div>
+                </div>
+            </div></div>
+        
+        <div class="main-controls">
+            <button class="control-btn" onclick="calculateUp()">⬆️ Calcular Hacia Arriba (Inversas)</button>
+            <button class="control-btn" onclick="clearResults()">🧹 Limpiar Resultados</button>
+            <button class="control-btn remove" onclick="clearEverything()">🗑️ Borrar TODO</button>
+            <button class="control-btn" onclick="loadExample()">📋 Cargar Ejemplo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentVariable = 'z';
+        let screenCount = 5;
+        
+        const functionPairs = {
+            // Funciones trigonométricas
+            'sen ( )': 'sen^-1 ( )',
+            'sen^-1 ( )': 'sen ( )',
+            'cos ( )': 'cos^-1 ( )',
+            'cos^-1 ( )': 'cos ( )',
+            'tan ( )': 'tan^-1 ( )',
+            'tan^-1 ( )': 'tan ( )',
+            
+            // Funciones exponenciales y logarítmicas
+            'ln ( )': 'e^ ( )',
+            'e^ ( )': 'ln ( )',
+            'log ( )': '10^ ( )',
+            '10^ ( )': 'log ( )',
+            
+            // Potencias y raíces - CORREGIDO
+            'sqrt ( )': '( ) ^2',
+            '( ) ^2': 'sqrt ( )',
+            '√ ( )': '( ) ^2',
+            'cbrt ( )': '( ) ^3',
+            '( ) ^3': 'cbrt ( )',
+            '∛ ( )': '( ) ^3',
+            
+            // Inverso multiplicativo
+            '( ) ^-1': '( ) ^-1',
+            '1/ ( )': '1/ ( )',
+            
+            // Operaciones especiales
+            '- ( )': '- ( )',
+            'abs ( )': 'abs ( )'
+        };
+        
+        function generateCalculator() {
+            const grid = document.getElementById('calculatorGrid');
+            grid.innerHTML = '';
+            
+            // Pantalla inicial (variable) con fondo verde claro para la solución
+            addScreenToGrid(1, currentVariable, '', true);
+            
+            // Pantallas intermedias con teclas
+            for (let i = 1; i < screenCount; i++) {
+                // Tecla (editable)
+                addKeyPairToGrid(i);
+                
+                // Pantalla siguiente (lado izquierdo editable)
+                const isLast = (i + 1) === screenCount;
+                addScreenToGrid(i + 1, '', '', false, isLast);
+            }
+        }
+        
+        function addScreenToGrid(num, leftContent, rightContent, isSolution = false, isLast = false) {
+            const row = document.createElement('div');
+            row.className = 'calculator-row';
+            
+            const isFirst = num === 1;
+            const screenClass = isLast ? 'screen last-screen' : 'screen';
+            const rightFieldClass = isSolution ? 'solution-field' : (isLast ? 'final-result' : 'result-field');
+            
+            row.innerHTML = `
+                <div class="${screenClass}">
+                    <div class="screen-counter">${num}</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen${num}_left" value="${leftContent}" 
+                               placeholder="${isFirst ? 'variable' : (isLast ? 'expresión completa' : 'expresión')}" 
+                               ${isFirst ? 'readonly' : ''}>
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen${num}_right" value="${rightContent}" 
+                               placeholder="${isSolution ? 'solución' : 'resultado'}" 
+                               class="${rightFieldClass}">
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('calculatorGrid').appendChild(row);
+        }
+        
+        function addKeyPairToGrid(level) {
+            const row = document.createElement('div');
+            row.className = 'calculator-row';
+            
+            row.innerHTML = `
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func${level}" value="" placeholder="ej: sen()" />
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse${level}" value="" placeholder="se calcula" readonly />
+                </div>
+            `;
+            
+            document.getElementById('calculatorGrid').appendChild(row);
+        }
+        
+        function getInverseFunction(func) {
+            const cleanFunc = func.trim();
+            
+            // Buscar funciones básicas en el diccionario
+            if (functionPairs[cleanFunc]) {
+                return functionPairs[cleanFunc];
+            }
+            
+            // Patrones dinámicos para cualquier número
+            const addPattern = cleanFunc.match(/^\(\)\+(-?\d+\.?\d*)$/);
+            if (addPattern) {
+                const num = parseFloat(addPattern[1]);
+                return `()-${num}`;
+            }
+            
+            const subtractPattern = cleanFunc.match(/^\(\)-(-?\d+\.?\d*)$/);
+            if (subtractPattern) {
+                const num = parseFloat(subtractPattern[1]);
+                return `()+${num}`;
+            }
+            
+            const multiplyPattern = cleanFunc.match(/^\(\)\*(-?\d+\.?\d*)$/);
+            if (multiplyPattern) {
+                const num = parseFloat(multiplyPattern[1]);
+                return `()/${num}`;
+            }
+            
+            const dividePattern = cleanFunc.match(/^\(\)\/(-?\d+\.?\d*)$/);
+            if (dividePattern) {
+                const num = parseFloat(dividePattern[1]);
+                return `()*${num}`;
+            }
+            
+            const reverseDividePattern = cleanFunc.match(/^(-?\d+\.?\d*)\/\(\)$/);
+            if (reverseDividePattern) {
+                return cleanFunc; // n/() es su propia inversa
+            }
+            
+            // Patrones para potencias generales
+            const powerPattern = cleanFunc.match(/^\(\)\^(-?\d+\.?\d*)$/);
+            if (powerPattern) {
+                const exp = parseFloat(powerPattern[1]);
+                if (exp === 2) return '√()';
+                if (exp === 3) return '∛()';
+                return `()^(1/${exp})`;
+            }
+            
+            const rootPattern = cleanFunc.match(/^∛\(\)$/);
+            if (rootPattern) {
+                return '()³';
+            }
+            
+            // Si no encuentra patrón conocido, devolver la función original
+            console.warn(`Función no reconocida: ${cleanFunc}`);
+            return cleanFunc;
+        }
+        
+        function addScreen() {
+            screenCount++;
+            document.getElementById('screenCount').value = screenCount;
+            generateCalculator();
+        }
+        
+        function removeScreen() {
+            if (screenCount > 2) {
+                screenCount--;
+                document.getElementById('screenCount').value = screenCount;
+                generateCalculator();
+            }
+        }
+        
+        function regenerateCalculator() {
+            screenCount = parseInt(document.getElementById('screenCount').value) || 5;
+            currentVariable = document.getElementById('variable').value;
+            generateCalculator();
+        }
+        
+        function calculateUp() {
+            try {
+                // Obtener el valor final de la última pantalla
+                let currentValue = parseFloat(document.getElementById(`screen${screenCount}_right`).value);
+                if (isNaN(currentValue)) {
+                    alert('Por favor ingresa un valor numérico en la última pantalla (lado derecho)');
+                    return;
+                }
+                
+                // Generar funciones inversas y calcular hacia arriba
+                for (let i = screenCount - 1; i >= 1; i--) {
+                    const funcElement = document.getElementById(`func${i}`);
+                    const inverseElement = document.getElementById(`inverse${i}`);
+                    
+                    if (!funcElement || !funcElement.value.trim()) continue;
+                    
+                    // Generar función inversa automáticamente
+                    const directFunc = funcElement.value.trim();
+                    const inverseFunc = getInverseFunction(directFunc);
+                    if (inverseElement) {
+                        inverseElement.value = inverseFunc;
+                    }
+                    
+                    // Aplicar función inversa
+                    currentValue = applyMathFunction(inverseFunc, currentValue);
+                    
+                    // Solo actualizar el resultado del lado derecho
+                    const resultInput = document.getElementById(`screen${i}_right`);
+                    if (resultInput) {
+                        if (isNaN(currentValue) || !isFinite(currentValue)) {
+                            resultInput.value = "ERROR";
+                            resultInput.className = "error";
+                            return;
+                        }
+                        
+                        // Mostrar más decimales para mayor precisión
+                        const displayValue = Math.abs(currentValue) < 0.001 || Math.abs(currentValue) > 1000 
+                            ? currentValue.toExponential(6) 
+                            : currentValue.toFixed(8);
+                        
+                        resultInput.value = displayValue;
+                        
+                        // Mantener la clase apropiada
+                        if (i === 1) {
+                            resultInput.className = "solution-field";
+                            // Verificar si puede haber múltiples soluciones
+                            const lastFunc = document.getElementById(`func${screenCount-1}`)?.value || '';
+                            if (lastFunc.includes('cos⁻¹') || lastFunc.includes('sen⁻¹') || lastFunc.includes('tan⁻¹') || 
+                                lastFunc.includes('√') || lastFunc.includes('()²')) {
+                                console.log(`⚠️ NOTA: Esta ecuación puede tener múltiples soluciones. Solución principal: ${currentVariable} = ${displayValue}`);
+                            }
+                        } else {
+                            resultInput.className = "result-field";
+                        }
+                    }
+                }
+                
+                // Mensaje final con información sobre posibles múltiples soluciones
+                const finalValue = Math.abs(currentValue) < 0.001 || Math.abs(currentValue) > 1000 
+                    ? currentValue.toExponential(8) 
+                    : currentValue.toFixed(8);
+                
+                console.log(`✅ Solución encontrada: ${currentVariable} = ${finalValue}`);
+                
+                // Verificar si la ecuación puede tener múltiples soluciones
+                let hasMultipleSolutions = false;
+                for (let j = 1; j < screenCount; j++) {
+                    const func = document.getElementById(`func${j}`)?.value || '';
+                    if (func.includes('cos⁻¹') || func.includes('sen⁻¹') || func.includes('√') || func.includes('()²')) {
+                        hasMultipleSolutions = true;
+                        break;
+                    }
+                }
+                
+                if (hasMultipleSolutions) {
+                    alert(`✅ Solución principal encontrada: ${currentVariable} = ${finalValue}\n\n⚠️ NOTA: Esta ecuación puede tener soluciones adicionales debido a las funciones trigonométricas inversas o raíces cuadradas presentes.`);
+                } else {
+                    alert(`✅ Solución encontrada: ${currentVariable} = ${finalValue}`);
+                }
+                
+            } catch (error) {
+                console.error('Error en cálculo ascendente:', error);
+                alert('Error en el cálculo inverso: ' + error.message);
+            }
+        }
+        
+        function applyMathFunction(func, value) {
+            const cleanFunc = func.replace(/\s*\(\s*\)\s*/g, '').replace(/\s+/g, ' ').trim();
+            
+            // Funciones trigonométricas - CORREGIDO
+            if (cleanFunc === 'sen' || cleanFunc === 'sin') return Math.sin(value);
+            if (cleanFunc === 'sen^-1' || cleanFunc === 'sin^-1' || cleanFunc === 'asin') {
+                if (value < -1 || value > 1) {
+                    throw new Error(`sen^-1 ( ${value} ) está fuera del dominio [-1, 1]`);
+                }
+                return Math.asin(value);
+            }
+            if (cleanFunc === 'cos') return Math.cos(value);
+            if (cleanFunc === 'cos^-1' || cleanFunc === 'acos') {
+                if (value < -1 || value > 1) {
+                    throw new Error(`cos^-1 ( ${value} ) está fuera del dominio [-1, 1]`);
+                }
+                return Math.acos(value);
+            }
+            if (cleanFunc === 'tan') return Math.tan(value);
+            if (cleanFunc === 'tan^-1' || cleanFunc === 'atan') return Math.atan(value);
+            
+            // Funciones exponenciales y logarítmicas
+            if (cleanFunc === 'ln') {
+                if (value <= 0) {
+                    throw new Error(`ln ( ${value} ) no está definido para valores ≤ 0`);
+                }
+                return Math.log(value);
+            }
+            if (cleanFunc === 'e^' || cleanFunc === 'exp') return Math.exp(value);
+            if (cleanFunc === 'log') {
+                if (value <= 0) {
+                    throw new Error(`log ( ${value} ) no está definido para valores ≤ 0`);
+                }
+                return Math.log10(value);
+            }
+            if (cleanFunc === '10^') return Math.pow(10, value);
+            
+            // Potencias y raíces - CORREGIDO
+            if (cleanFunc === '√' || cleanFunc === 'sqrt') {
+                if (value < 0) {
+                    throw new Error(`sqrt ( ${value} ) no está definido para valores negativos en números reales`);
+                }
+                return Math.sqrt(value);
+            }
+            if (cleanFunc === '∛' || cleanFunc === 'cbrt') return Math.cbrt(value);
+            if (cleanFunc === '^2') return Math.pow(value, 2);
+            if (cleanFunc === '^3') return Math.pow(value, 3);
+            
+            // Inverso multiplicativo
+            if (cleanFunc === '^-1' || cleanFunc === '1/') {
+                if (value === 0) {
+                    throw new Error('División por cero no está definida');
+                }
+                return 1 / value;
+            }
+            
+            // Negativo
+            if (cleanFunc === '-') return -value;
+            
+            // Valor absoluto
+            if (cleanFunc === 'abs') return Math.abs(value);
+            
+            // Operaciones con cualquier número
+            const addPattern = cleanFunc.match(/^\+\s*(-?\d+\.?\d*)$/);
+            if (addPattern) {
+                return value + parseFloat(addPattern[1]);
+            }
+            
+            const subtractPattern = cleanFunc.match(/^-\s*(-?\d+\.?\d*)$/);
+            if (subtractPattern) {
+                return value - parseFloat(subtractPattern[1]);
+            }
+            
+            const multiplyPattern = cleanFunc.match(/^\*\s*(-?\d+\.?\d*)$/);
+            if (multiplyPattern) {
+                return value * parseFloat(multiplyPattern[1]);
+            }
+            
+            const dividePattern = cleanFunc.match(/^\/\s*(-?\d+\.?\d*)$/);
+            if (dividePattern) {
+                const divisor = parseFloat(dividePattern[1]);
+                if (divisor === 0) {
+                    throw new Error('División por cero no está definida');
+                }
+                return value / divisor;
+            }
+            
+            const reverseDividePattern = cleanFunc.match(/^(-?\d+\.?\d*)\s*\/$/) || cleanFunc.match(/^(-?\d+\.?\d*)$/);
+            if (reverseDividePattern && cleanFunc.includes('/')) {
+                if (value === 0) {
+                    throw new Error('División por cero no está definida');
+                }
+                return parseFloat(reverseDividePattern[1]) / value;
+            }
+            
+            // Potencias generales
+            const powerPattern = cleanFunc.match(/^\^\s*(-?\d+\.?\d*)$/);
+            if (powerPattern) {
+                const exp = parseFloat(powerPattern[1]);
+                return Math.pow(value, exp);
+            }
+            
+            console.warn(`Función no reconocida: ${cleanFunc}`);
+            return value;
+        }
+        
+        function clearResults() {
+            // Solo limpiar los resultados del lado derecho
+            for (let i = 1; i <= screenCount; i++) {
+                const rightInput = document.getElementById(`screen${i}_right`);
+                if (rightInput && i < screenCount) { // No limpiar la última pantalla
+                    rightInput.value = "";
+                    if (i === 1) {
+                        rightInput.className = "solution-field";
+                    } else {
+                        rightInput.className = "result-field";
+                    }
+                }
+            }
+            
+            // Limpiar funciones inversas
+            for (let i = 1; i < screenCount; i++) {
+                const inverseInput = document.getElementById(`inverse${i}`);
+                if (inverseInput) {
+                    inverseInput.value = "";
+                }
+            }
+        }
+        
+        function clearEverything() {
+            // Limpiar absolutamente todo
+            for (let i = 1; i <= screenCount; i++) {
+                const leftInput = document.getElementById(`screen${i}_left`);
+                const rightInput = document.getElementById(`screen${i}_right`);
+                
+                if (leftInput && i > 1) { // No limpiar la primera (variable)
+                    leftInput.value = "";
+                }
+                if (rightInput) {
+                    rightInput.value = "";
+                    if (i === 1) {
+                        rightInput.className = "solution-field";
+                    } else if (i === screenCount) {
+                        rightInput.className = "final-result";
+                    } else {
+                        rightInput.className = "result-field";
+                    }
+                }
+                
+                const funcInput = document.getElementById(`func${i}`);
+                const inverseInput = document.getElementById(`inverse${i}`);
+                if (funcInput) funcInput.value = "";
+                if (inverseInput) inverseInput.value = "";
+            }
+            
+            document.getElementById('finalResult').value = "";
+            document.getElementById('equationDisplay').value = "Escribe aquí tu ecuación...";
+        }
+        
+        function loadExample() {
+            // Cargar ejemplo con funciones correctas - CORREGIDO
+            document.getElementById('func1').value = "sen^-1 ( )";
+            document.getElementById('func2').value = "sen ( )";
+            document.getElementById('func3').value = "cos ( )";
+            document.getElementById('func4').value = "cos^-1 ( )";
+            
+            // CORREGIR: Limpiar las inversas para que se generen correctamente
+            document.getElementById('inverse1').value = "";
+            document.getElementById('inverse2').value = "";
+            document.getElementById('inverse3').value = "";
+            document.getElementById('inverse4').value = "";
+            
+            // Establecer la expresión completa en la última pantalla
+            document.getElementById(`screen${screenCount}_left`).value = "cos^-1 ( cos ( sen ( sen^-1 ( z ) ) ) )";
+            document.getElementById(`screen${screenCount}_right`).value = "-0.2";
+            
+            document.getElementById('equationDisplay').value = "cos^-1 ( cos ( sen ( sen^-1 ( z ) ) ) ) = -0.2";
+        }
+        
+        let currentFocusedInput = null;
+        
+        function toggleSymbolPalette() {
+            const palette = document.getElementById('symbolPalette');
+            palette.style.display = palette.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function insertSymbol(symbol) {
+            // Si hay un input enfocado, insertar ahí
+            if (currentFocusedInput) {
+                currentFocusedInput.value += symbol;
+                currentFocusedInput.focus();
+            } else {
+                // Si no hay input enfocado, mostrar en consola
+                console.log(`Símbolo seleccionado: ${symbol}`);
+                alert(`Símbolo ${symbol} copiado. Haz clic en una función para insertar.`);
+            }
+        }
+        
+        // Rastrear el input enfocado
+        document.addEventListener('focusin', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.id.includes('func')) {
+                currentFocusedInput = e.target;
+            }
+        });
+        
+        // Event listeners
+        document.getElementById('variable').addEventListener('change', function() {
+            currentVariable = this.value;
+            const firstScreen = document.getElementById('screen1_left');
+            if (firstScreen) {
+                firstScreen.value = currentVariable;
+            }
+        });
+        
+        document.getElementById('screenCount').addEventListener('change', function() {
+            screenCount = parseInt(this.value) || 5;
+            if (screenCount < 2) screenCount = 2;
+            if (screenCount > 10) screenCount = 10;
+            this.value = screenCount;
+            generateCalculator();
+        });
+        
+        document.getElementById('finalResult').addEventListener('input', function() {
+            const lastScreen = document.getElementById(`screen${screenCount}_right`);
+            if (lastScreen) {
+                lastScreen.value = this.value;
+            }
+        });
+        
+        // Sincronizar resultado final con última pantalla
+        document.addEventListener('input', function(e) {
+            if (e.target.id === `screen${screenCount}_right`) {
+                document.getElementById('finalResult').value = e.target.value;
+            }
+        });
+        
+        // Inicializar
+        window.addEventListener('load', function() {
+            generateCalculator();
+            loadExample();
+        });
+    </script>
+
+
+</body></html>
