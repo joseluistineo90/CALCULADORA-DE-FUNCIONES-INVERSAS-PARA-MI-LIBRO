@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)file:///C:/Users/Laptop%20Win7/Downloads/inverse_function_calculator_v047.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Funciones Inversas v0.4.7 - Dr. Pedro Alson</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .calculator {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #ffffff, #e8e8e8);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 2px solid #d1d5db;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .developer {
+            color: #059669;
+            font-size: 14px;
+            font-style: italic;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .developer-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #059669, #047857);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .controls-section {
+            background: rgba(59,130,246,0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .controls-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .control-input, .variable-selector select {
+            background: #ffffff;
+            color: #1f2937;
+            border: 2px solid #9ca3af;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .equation-display {
+            text-align: center;
+            font-size: 18px;
+            color: #dc2626;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(251, 191, 36, 0.2);
+            border-radius: 12px;
+            border: 2px solid #fbbf24;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .equation-display .edit-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fbbf24;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .calculator-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(243,244,246,0.5);
+            border-radius: 15px;
+            border: 1px solid #d1d5db;
+        }
+        
+        .calculator-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .screen {
+            width: 280px;
+            height: 55px;
+            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            border: 3px solid #475569;
+            border-radius: 30px;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .screen.last-screen {
+            width: 350px;
+        }
+        
+        .screen-left, .screen-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .screen.last-screen .screen-left {
+            flex: 2;
+        }
+        
+        .screen-divider {
+            width: 2px;
+            background: #475569;
+            height: 100%;
+        }
+        
+        .screen input {
+            background: transparent;
+            border: none;
+            color: #1f2937;
+            text-align: center;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            width: 95%;
+            outline: none;
+            font-weight: bold;
+            cursor: text;
+        }
+        
+        .screen input.solution-field {
+            background: rgba(22,163,74,0.2);
+            border-radius: 4px;
+            border: 1px solid rgba(22,163,74,0.3);
+        }
+        
+        .screen input.result-field {
+            background: rgba(34,197,94,0.1);
+            border-radius: 4px;
+        }
+        
+        .screen input.final-result {
+            background: rgba(220,38,38,0.1);
+            border-radius: 4px;
+        }
+        
+        .instructions {
+            background: rgba(124,58,237,0.1);
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #5b21b6;
+            font-weight: 600;
+        }
+        
+        .key {
+            width: 110px;
+            height: 35px;
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            border: 2px solid #1d4ed8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            margin: 0 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 2px;
+        }
+        
+        .key.inverse {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            border-color: #991b1b;
+        }
+        
+        .key input {
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: center;
+            width: 100%;
+            font-size: 10px;
+            font-weight: bold;
+            outline: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .main-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 20px;
+            background: linear-gradient(145deg, #059669, #047857);
+            border: 2px solid #065f46;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .control-btn.add {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            border-color: #d97706;
+        }
+        
+        .control-btn.remove {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            border-color: #991b1b;
+        }
+        
+        .control-btn.calculate {
+            background: linear-gradient(145deg, #10b981, #059669);
+            border-color: #047857;
+            font-size: 14px;
+            padding: 15px 25px;
+        }
+        
+        .screen-counter {
+            position: absolute;
+            top: -12px;
+            right: 12px;
+            background: #6366f1;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .symbol-palette {
+            background: rgba(124,58,237,0.1);
+            border: 2px solid #7c3aed;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .symbol-section {
+            margin-bottom: 15px;
+        }
+        
+        .symbol-section-title {
+            color: #6d28d9;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .symbol-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .symbol-btn {
+            background: linear-gradient(145deg, #6366f1, #4f46e5);
+            border: 2px solid #4338ca;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 50px;
+            text-align: center;
+            user-select: none;
+        }
+        
+        .symbol-btn:hover {
+            background: linear-gradient(145deg, #4f46e5, #4338ca);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .explanation-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #92400e;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .theory-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #047857;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .theory-section h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #065f46;
+            font-size: 16px;
+        }
+        
+        .theory-section h4 {
+            margin: 15px 0 8px 0;
+            color: #047857;
+            font-size: 14px;
+        }
+        
+        .ui-guide {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #15803d;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        /* RESPONSIVE DESIGN - MEJORADO */
+        @media (max-width: 600px) {
+            .screen-counter {
+                top: -10px;
+                right: 8px;
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
+                font-weight: 900;
+                border: 2px solid #ffffff;
+                background: #dc2626;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            }
+            
+            .screen input { 
+                font-size: 11px !important;
+                font-weight: 900;
+                text-shadow: 0 0 1px rgba(0,0,0,0.3);
+            }
+            
+            .key {
+                width: 100px;
+                height: 40px;
+                font-size: 9px;
+                margin: 0 3px;
+                padding: 4px;
+            }
+            
+            .key input { 
+                font-size: 9px !important;
+                font-weight: 900 !important;
+                text-shadow: 0 0 2px rgba(0,0,0,0.5);
+                letter-spacing: 0.3px;
+            }
+        }
+        
+        @media (min-width: 601px) and (max-width: 900px) {
+            .screen-counter {
+                top: -10px;
+                right: 10px;
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
+                font-weight: 900;
+                background: #7c3aed;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            }
+            
+            .key input {
+                font-size: 10px !important;
+                letter-spacing: 0.4px;
+            }
+        }
+        
+        @media (min-width: 901px) {
+            .screen-counter {
+                top: -12px;
+                right: 12px;
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+                font-weight: 900;
+                background: #059669;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">
+            <h1 class="title">Calculadora de Funciones Inversas v0.4.7</h1>
+            <div class="subtitle">Basado en el método del Dr. Pedro Alson - Matemáticas 1 - UCV</div>
+            <div class="developer">
+                <div class="developer-logo">JT</div>
+                Elaborado por José Luis Tineo Castro - Versión 47
+            </div>
+        </div>
+        
+        <div class="ui-guide">
+            <strong>Guía Visual:</strong><br>
+            • <strong>Pantallas (óvalos divididos):</strong> Muestran las expresiones y resultados paso a paso<br>
+            • <strong>Teclas azules:</strong> Funciones directas que puedes editar<br>
+            • <strong>Teclas rojas:</strong> Funciones inversas generadas automáticamente
+        </div>
+        
+        <div class="instructions">
+            <strong>Ejemplo paso a paso:</strong> sec(ln(x-3))=1<br>
+            <strong>1.</strong> Primera pantalla: x | solución<br>
+            <strong>2.</strong> Tecla: ()-3 → Pantalla: x-3 | resultado<br>
+            <strong>3.</strong> Tecla: ln() → Pantalla: ln(x-3) | resultado<br>
+            <strong>4.</strong> Tecla: cos() → Pantalla: cos(ln(x-3)) | resultado<br>
+            <strong>5.</strong> Tecla: ()^-1 → Última pantalla: sec(ln(x-3)) | 1<br>
+            <strong>6.</strong> Presiona "⬆️ Calcular Hacia Arriba" para obtener la solución
+        </div>
+        
+        <div class="controls-section">
+            <div class="controls-row">
+                <div class="control-group">
+                    <label>Variable:</label>
+                    <select id="variable" class="control-input">
+                        <option value="x">x</option>
+                        <option value="z">z</option>
+                        <option value="y">y</option>
+                        <option value="n">n</option>
+                        <option value="t">t</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>Pantallas:</label>
+                    <input type="number" id="screenCount" class="control-input" value="5" min="2" max="10">
+                </div>
+                
+                <div class="control-group">
+                    <button class="control-btn add" onclick="toggleSymbolPalette()">🔱 Símbolos</button>
+                    <button class="control-btn" onclick="toggleTheorySection()">📚 Teoría</button>
+                </div>
+            </div>
+            
+            <div class="controls-row">
+                <button class="control-btn add" onclick="addScreen()">+ Agregar Pantalla</button>
+                <button class="control-btn remove" onclick="removeScreen()">- Quitar Pantalla</button>
+                <button class="control-btn" onclick="regenerateCalculator()">🔄 Regenerar</button>
+            </div>
+            
+            <div id="theorySection" class="theory-section">
+                <h3>Teoría de Funciones Inversas</h3>
+                
+                <h4>1. Funciones Inversas (Funcionales)</h4>
+                <p><strong>Definición:</strong> La función inversa deshace la operación de la función original.</p>
+                <p>• <strong>Arcseno:</strong> arcsen() o sen⁻¹() significa "ángulo cuyo seno es"</p>
+                <p>• <strong>Ejemplo:</strong> Si sen(30°) = 0.5, entonces arcsen(0.5) = 30°</p>
+                <p>• <strong>Funciones disponibles:</strong></p>
+                <p>  - arcsen() = sen⁻¹() (inversa del seno)</p>
+                <p>  - arccos() = cos⁻¹() (inversa del coseno)</p>
+                <p>  - arctan() = tan⁻¹() (inversa de la tangente)</p>
+                
+                <h4>2. Funciones Recíprocas</h4>
+                <p><strong>Definición:</strong> Son el inverso numérico (1/función) de las funciones básicas:</p>
+                <p>• <strong>Secante:</strong> sec() = 1/cos()</p>
+                <p>• <strong>Cosecante:</strong> csc() = 1/sen()</p>
+                <p>• <strong>Cotangente:</strong> cot() = 1/tan()</p>
+                
+                <h4>3. Inversas de las Funciones Recíprocas</h4>
+                <p>Las funciones recíprocas también tienen sus inversas funcionales:</p>
+                <p>• <strong>arcsec() = sec⁻¹():</strong> ángulo cuya secante es</p>
+                <p>• <strong>arccsc() = csc⁻¹():</strong> ángulo cuya cosecante es</p>
+                <p>• <strong>arccot() = cot⁻¹():</strong> ángulo cuya cotangente es</p>
+                
+                <h4>4. Importante: Diferencias</h4>
+                <p>• <strong>sec⁻¹() ≠ 1/sec():</strong> La inversa funcional NO es lo mismo que el recíproco</p>
+                <p>• <strong>sec⁻¹():</strong> Función que deshace la secante</p>
+                <p>• <strong>1/sec():</strong> Recíproco de la secante (que es cos())</p>
+            </div>
+            
+            <div id="symbolPalette" class="symbol-palette" style="display: none;">
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Funciones Trigonométricas Básicas</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;sen()&#39;)">sen()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;cos()&#39;)">cos()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;tan()&#39;)">tan()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Funciones Trigonométricas Inversas (Funcionales)</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arcsen()&#39;)">arcsen()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;sen^-1()&#39;)">sen⁻¹()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arccos()&#39;)">arccos()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;cos^-1()&#39;)">cos⁻¹()</span>
+                    </div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arctan()&#39;)">arctan()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;tan^-1()&#39;)">tan⁻¹()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Funciones Trigonométricas Recíprocas</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;sec()&#39;)">sec() = 1/cos()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;csc()&#39;)">csc() = 1/sen()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;cot()&#39;)">cot() = 1/tan()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Inversas de Funciones Recíprocas (Funcionales)</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arcsec()&#39;)">arcsec()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;sec^-1()&#39;)">sec⁻¹()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arccsc()&#39;)">arccsc()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;csc^-1()&#39;)">csc⁻¹()</span>
+                    </div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;arccot()&#39;)">arccot()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;cot^-1()&#39;)">cot⁻¹()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Funciones Hiperbólicas</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;senh()&#39;)">senh()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;cosh()&#39;)">cosh()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;tanh()&#39;)">tanh()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Logaritmos y Exponenciales</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;ln()&#39;)">ln()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;e^()&#39;)">e^()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;log()&#39;)">log()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;10^()&#39;)">10^()</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Potencias y Raíces</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;√()&#39;)">√()</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()^2&#39;)">x²</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()^-1&#39;)">x⁻¹</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()^3&#39;)">x³</span>
+                    </div>
+                </div>
+                
+                <div class="symbol-section">
+                    <div class="symbol-section-title">Operaciones Básicas</div>
+                    <div class="symbol-row">
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()+&#39;)">x+</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()-&#39;)">x-</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()*&#39;)">x×</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;()/&#39;)">x÷</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;/()&#39;)">÷x</span>
+                        <span class="symbol-btn" onclick="insertSymbol(&#39;*()&#39;)">×x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation-box">
+            <strong>Diferencia entre Inversas Funcionales e Inversas Recíprocas:</strong><br>
+            • <strong>Inversas Funcionales:</strong> Deshacen la operación (ej: sen⁻¹() deshace sen())<br>
+            • <strong>Inversas Recíprocas:</strong> Son 1/función (ej: sec() = 1/cos(), csc() = 1/sen())<br>
+            Las inversas funcionales de las recíprocas son diferentes: sec⁻¹() ≠ 1/sec()
+        </div>
+        
+        <div class="equation-display">
+            <div class="edit-label">👆 Edite esta ecuación de ejemplo</div>
+            <input type="text" id="equationDisplay" value="sec(ln(x-3)) = 1" placeholder="Ecuación ejemplo..." style="background:transparent; border:none; color:#dc2626; font-size:18px; font-weight:bold; text-align:center; width:100%; outline:none;">
+        </div>
+        
+        <div class="calculator-grid" id="calculatorGrid"><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">1</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen1_left" value="x" placeholder="variable" readonly="">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen1_right" value="" placeholder="solución" class="solution-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func1" value="" placeholder="ej: ln()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse1" value="" placeholder="automática" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">2</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen2_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen2_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func2" value="" placeholder="ej: ln()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse2" value="" placeholder="automática" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">3</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen3_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen3_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func3" value="" placeholder="ej: ln()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse3" value="" placeholder="automática" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen">
+                    <div class="screen-counter">4</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen4_left" value="" placeholder="expresión">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen4_right" value="" placeholder="resultado" class="result-field">
+                    </div>
+                </div>
+            </div><div class="calculator-row">
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func4" value="" placeholder="ej: ln()">
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse4" value="" placeholder="automática" readonly="">
+                </div>
+            </div><div class="calculator-row">
+                <div class="screen last-screen">
+                    <div class="screen-counter">5</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen5_left" value="" placeholder="expresión completa">
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen5_right" value="" placeholder="resultado" class="final-result">
+                    </div>
+                </div>
+            </div></div>
+        
+        <div class="main-controls">
+            <button class="control-btn calculate" onclick="calculateUp()">⬆️ Calcular Hacia Arriba</button>
+            <button class="control-btn" onclick="clearResults()">Limpiar Resultados</button>
+            <button class="control-btn remove" onclick="clearEverything()">Borrar TODO</button>
+            <button class="control-btn" onclick="loadExample()">Cargar Ejemplo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentVariable = 'x';
+        let screenCount = 5;
+        let currentFocusedInput = null;
+        
+        // Diccionario de funciones inversas mejorado y corregido
+        const functionPairs = {
+            // Funciones trigonométricas básicas y sus inversas funcionales
+            'sen()': 'arcsen()',
+            'arcsen()': 'sen()',
+            'sen^-1()': 'sen()',
+            'cos()': 'arccos()',
+            'arccos()': 'cos()',
+            'cos^-1()': 'cos()',
+            'tan()': 'arctan()',
+            'arctan()': 'tan()',
+            'tan^-1()': 'tan()',
+            
+            // Funciones trigonométricas recíprocas y sus inversas funcionales
+            'sec()': 'arcsec()',
+            'arcsec()': 'sec()',
+            'sec^-1()': 'sec()',
+            'csc()': 'arccsc()',
+            'arccsc()': 'csc()',
+            'csc^-1()': 'csc()',
+            'cot()': 'arccot()',
+            'arccot()': 'cot()',
+            'cot^-1()': 'cot()',
+            
+            // Funciones hiperbólicas
+            'senh()': 'arcsenh()',
+            'arcsenh()': 'senh()',
+            'cosh()': 'arccosh()',
+            'arccosh()': 'cosh()',
+            'tanh()': 'arctanh()',
+            'arctanh()': 'tanh()',
+            
+            // Exponenciales y logaritmos
+            'ln()': 'e^()',
+            'e^()': 'ln()',
+            'log()': '10^()',
+            '10^()': 'log()',
+            
+            // Potencias y raíces
+            'sqrt()': '()^2',
+            '()^2': 'sqrt()',
+            '√()': '()^2',
+            '()^3': 'cbrt()',
+            'cbrt()': '()^3',
+            
+            // Inverso multiplicativo
+            '()^-1': '()^-1',
+            '1/()': '()^-1',
+            
+            // Operaciones especiales
+            '-()': '-()',
+            'abs()': 'abs()'
+        };
+        
+        function normalizeFunction(func) {
+            if (!func) return '';
+            
+            let normalized = func.trim();
+            
+            // Hacer case-insensitive y normalizar
+            normalized = normalized
+                .toLowerCase()
+                // Normalizar funciones trigonométricas
+                .replace(/sin\s*\(\s*\)/g, 'sen()')
+                .replace(/asin\s*\(\s*\)/g, 'arcsen()')
+                .replace(/acos\s*\(\s*\)/g, 'arccos()')
+                .replace(/atan\s*\(\s*\)/g, 'arctan()')
+                .replace(/asec\s*\(\s*\)/g, 'arcsec()')
+                .replace(/acsc\s*\(\s*\)/g, 'arccsc()')
+                .replace(/acot\s*\(\s*\)/g, 'arccot()')
+                
+                // Normalizar recíprocas
+                .replace(/secant\s*\(\s*\)/g, 'sec()')
+                .replace(/cosecant\s*\(\s*\)/g, 'csc()')
+                .replace(/cosec\s*\(\s*\)/g, 'csc()')
+                .replace(/cotangent\s*\(\s*\)/g, 'cot()')
+                .replace(/cotan\s*\(\s*\)/g, 'cot()')
+                
+                // Normalizar logaritmos
+                .replace(/logaritmo\s*natural\s*\(\s*\)/g, 'ln()')
+                .replace(/exponencial\s*\(\s*\)/g, 'e^()')
+                
+                // Normalizar raíces y potencias
+                .replace(/raiz\s*cuadrada\s*\(\s*\)/g, 'sqrt()')
+                .replace(/raiz\s*\(\s*\)/g, 'sqrt()')
+                .replace(/\(\s*\)\s*al\s*cuadrado/g, '()^2')
+                .replace(/\(\s*\)\s*\^\s*2/g, '()^2')
+                .replace(/\(\s*\)\s*\^\s*3/g, '()^3')
+                
+                // Normalizar inverso multiplicativo
+                .replace(/\(\s*\)\s*inverso/g, '()^-1')
+                .replace(/1\s*\/\s*\(\s*\)/g, '1/()')
+                .replace(/\(\s*\)\s*\^\s*-\s*1/g, '()^-1')
+                
+                // Limpiar espacios
+                .replace(/\s*\(\s*\)\s*/g, '()')
+                .replace(/\s+/g, '');
+            
+            return normalized;
+        }
+        
+        function getInverseFunction(func) {
+            const normalizedFunc = normalizeFunction(func);
+            
+            // Buscar en el diccionario
+            if (functionPairs[normalizedFunc]) {
+                return functionPairs[normalizedFunc];
+            }
+            
+            // Patrones para operaciones con números
+            const addPattern = normalizedFunc.match(/^\(\)\+(-?\d+\.?\d*)$/);
+            if (addPattern) {
+                const num = parseFloat(addPattern[1]);
+                return `()-${num}`;
+            }
+            
+            const subtractPattern = normalizedFunc.match(/^\(\)-(-?\d+\.?\d*)$/);
+            if (subtractPattern) {
+                const num = parseFloat(subtractPattern[1]);
+                return `()+${num}`;
+            }
+            
+            const multiplyPattern = normalizedFunc.match(/^\(\)\*(-?\d+\.?\d*)$/);
+            if (multiplyPattern) {
+                const num = parseFloat(multiplyPattern[1]);
+                return `()/${num}`;
+            }
+            
+            const dividePattern = normalizedFunc.match(/^\(\)\/(-?\d+\.?\d*)$/);
+            if (dividePattern) {
+                const num = parseFloat(dividePattern[1]);
+                return `()*${num}`;
+            }
+            
+            const reverseDividePattern = normalizedFunc.match(/^(-?\d+\.?\d*)\/\(\)$/);
+            if (reverseDividePattern) {
+                return normalizedFunc; // n/() es su propia inversa
+            }
+            
+            const reverseMultiplyPattern = normalizedFunc.match(/^(-?\d+\.?\d*)\*\(\)$/);
+            if (reverseMultiplyPattern) {
+                const num = parseFloat(reverseMultiplyPattern[1]);
+                return `()/${num}`;
+            }
+            
+            return normalizedFunc;
+        }
+        
+        function generateCalculator() {
+            const grid = document.getElementById('calculatorGrid');
+            grid.innerHTML = '';
+            
+            // Pantalla inicial (variable)
+            addScreenToGrid(1, currentVariable, '', true);
+            
+            // Pantallas intermedias con teclas
+            for (let i = 1; i < screenCount; i++) {
+                addKeyPairToGrid(i);
+                const isLast = (i + 1) === screenCount;
+                addScreenToGrid(i + 1, '', '', false, isLast);
+            }
+        }
+        
+        function addScreenToGrid(num, leftContent, rightContent, isSolution = false, isLast = false) {
+            const row = document.createElement('div');
+            row.className = 'calculator-row';
+            
+            const isFirst = num === 1;
+            const screenClass = isLast ? 'screen last-screen' : 'screen';
+            const rightFieldClass = isSolution ? 'solution-field' : (isLast ? 'final-result' : 'result-field');
+            
+            row.innerHTML = `
+                <div class="${screenClass}">
+                    <div class="screen-counter">${num}</div>
+                    <div class="screen-left">
+                        <input type="text" id="screen${num}_left" value="${leftContent}" 
+                               placeholder="${isFirst ? 'variable' : (isLast ? 'expresión completa' : 'expresión')}" 
+                               ${isFirst ? 'readonly' : ''}>
+                    </div>
+                    <div class="screen-divider"></div>
+                    <div class="screen-right">
+                        <input type="text" id="screen${num}_right" value="${rightContent}" 
+                               placeholder="${isSolution ? 'solución' : 'resultado'}" 
+                               class="${rightFieldClass}">
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('calculatorGrid').appendChild(row);
+        }
+        
+        function addKeyPairToGrid(level) {
+            const row = document.createElement('div');
+            row.className = 'calculator-row';
+            
+            row.innerHTML = `
+                <div class="key" title="Función directa - Editable">
+                    <input type="text" id="func${level}" value="" placeholder="ej: ln()" />
+                </div>
+                <div class="key inverse" title="Función inversa - Se genera automáticamente">
+                    <input type="text" id="inverse${level}" value="" placeholder="automática" readonly />
+                </div>
+            `;
+            
+            document.getElementById('calculatorGrid').appendChild(row);
+        }
+        
+        function calculateUp() {
+            try {
+                let currentValue = parseFloat(document.getElementById(`screen${screenCount}_right`).value);
+                if (isNaN(currentValue)) {
+                    alert('Ingresa un valor numérico en la última pantalla (lado derecho)');
+                    return;
+                }
+                
+                for (let i = screenCount - 1; i >= 1; i--) {
+                    const funcElement = document.getElementById(`func${i}`);
+                    const inverseElement = document.getElementById(`inverse${i}`);
+                    
+                    if (!funcElement || !funcElement.value.trim()) continue;
+                    
+                    const directFunc = funcElement.value.trim();
+                    const inverseFunc = getInverseFunction(directFunc);
+                    if (inverseElement) {
+                        inverseElement.value = inverseFunc;
+                    }
+                    
+                    currentValue = applyMathFunction(inverseFunc, currentValue);
+                    
+                    const resultInput = document.getElementById(`screen${i}_right`);
+                    if (resultInput) {
+                        if (isNaN(currentValue) || !isFinite(currentValue)) {
+                            resultInput.value = "ERROR";
+                            return;
+                        }
+                        
+                        const displayValue = Math.abs(currentValue) < 0.001 || Math.abs(currentValue) > 1000 
+                            ? currentValue.toExponential(6) 
+                            : currentValue.toFixed(6);
+                        
+                        resultInput.value = displayValue;
+                        
+                        if (i === 1) {
+                            resultInput.className = "solution-field";
+                        } else {
+                            resultInput.className = "result-field";
+                        }
+                    }
+                }
+                
+                const finalValue = Math.abs(currentValue) < 0.001 || Math.abs(currentValue) > 1000 
+                    ? currentValue.toExponential(6) 
+                    : currentValue.toFixed(6);
+                
+                alert(`✅ Solución encontrada: ${currentVariable} = ${finalValue}`);
+                
+            } catch (error) {
+                console.error('Error en cálculo:', error);
+                alert('Error en el cálculo: ' + error.message);
+            }
+        }
+        
+        function applyMathFunction(func, value) {
+            const normalizedFunc = normalizeFunction(func);
+            
+            // Funciones trigonométricas básicas
+            if (normalizedFunc === 'sen()' || normalizedFunc === 'sin()') return Math.sin(value);
+            if (normalizedFunc === 'arcsen()' || normalizedFunc === 'sen^-1()') {
+                if (value < -1 || value > 1) throw new Error(`arcsen(${value}) fuera del dominio [-1,1]`);
+                return Math.asin(value);
+            }
+            if (normalizedFunc === 'cos()') return Math.cos(value);
+            if (normalizedFunc === 'arccos()' || normalizedFunc === 'cos^-1()') {
+                if (value < -1 || value > 1) throw new Error(`arccos(${value}) fuera del dominio [-1,1]`);
+                return Math.acos(value);
+            }
+            if (normalizedFunc === 'tan()') return Math.tan(value);
+            if (normalizedFunc === 'arctan()' || normalizedFunc === 'tan^-1()') return Math.atan(value);
+            
+            // Funciones trigonométricas recíprocas
+            if (normalizedFunc === 'sec()') return 1 / Math.cos(value);
+            if (normalizedFunc === 'arcsec()' || normalizedFunc === 'sec^-1()') {
+                if (Math.abs(value) < 1) throw new Error(`arcsec(${value}) requiere |x| >= 1`);
+                return Math.acos(1 / value);
+            }
+            if (normalizedFunc === 'csc()') return 1 / Math.sin(value);
+            if (normalizedFunc === 'arccsc()' || normalizedFunc === 'csc^-1()') {
+                if (Math.abs(value) < 1) throw new Error(`arccsc(${value}) requiere |x| >= 1`);
+                return Math.asin(1 / value);
+            }
+            if (normalizedFunc === 'cot()') return 1 / Math.tan(value);
+            if (normalizedFunc === 'arccot()' || normalizedFunc === 'cot^-1()') return Math.atan(1 / value);
+            
+            // Funciones hiperbólicas
+            if (normalizedFunc === 'senh()') return Math.sinh(value);
+            if (normalizedFunc === 'arcsenh()') return Math.asinh(value);
+            if (normalizedFunc === 'cosh()') return Math.cosh(value);
+            if (normalizedFunc === 'arccosh()') return Math.acosh(value);
+            if (normalizedFunc === 'tanh()') return Math.tanh(value);
+            if (normalizedFunc === 'arctanh()') return Math.atanh(value);
+            
+            // Funciones exponenciales y logarítmicas
+            if (normalizedFunc === 'ln()') {
+                if (value <= 0) throw new Error(`ln(${value}) no definido para x <= 0`);
+                return Math.log(value);
+            }
+            if (normalizedFunc === 'e^()') return Math.exp(value);
+            if (normalizedFunc === 'log()') {
+                if (value <= 0) throw new Error(`log(${value}) no definido para x <= 0`);
+                return Math.log10(value);
+            }
+            if (normalizedFunc === '10^()') return Math.pow(10, value);
+            
+            // Potencias y raíces
+            if (normalizedFunc === 'sqrt()' || normalizedFunc === '√()') {
+                if (value < 0) throw new Error(`sqrt(${value}) no definido para x < 0`);
+                return Math.sqrt(value);
+            }
+            if (normalizedFunc === '()^2') return Math.pow(value, 2);
+            if (normalizedFunc === '()^3') return Math.pow(value, 3);
+            if (normalizedFunc === 'cbrt()') return Math.cbrt(value);
+            
+            // Inverso multiplicativo
+            if (normalizedFunc === '()^-1' || normalizedFunc === '1/()') {
+                if (value === 0) throw new Error('División por cero');
+                return 1 / value;
+            }
+            
+            // Operaciones especiales
+            if (normalizedFunc === '-()') return -value;
+            if (normalizedFunc === 'abs()') return Math.abs(value);
+            
+            // Operaciones con números
+            const addPattern = normalizedFunc.match(/^\(\)\+(-?\d+\.?\d*)$/);
+            if (addPattern) return value + parseFloat(addPattern[1]);
+            
+            const subtractPattern = normalizedFunc.match(/^\(\)-(-?\d+\.?\d*)$/);
+            if (subtractPattern) return value - parseFloat(subtractPattern[1]);
+            
+            const multiplyPattern = normalizedFunc.match(/^\(\)\*(-?\d+\.?\d*)$/);
+            if (multiplyPattern) return value * parseFloat(multiplyPattern[1]);
+            
+            const dividePattern = normalizedFunc.match(/^\(\)\/(-?\d+\.?\d*)$/);
+            if (dividePattern) {
+                const divisor = parseFloat(dividePattern[1]);
+                if (divisor === 0) throw new Error('División por cero');
+                return value / divisor;
+            }
+            
+            const reverseDividePattern = normalizedFunc.match(/^(-?\d+\.?\d*)\/\(\)$/);
+            if (reverseDividePattern) {
+                if (value === 0) throw new Error('División por cero');
+                return parseFloat(reverseDividePattern[1]) / value;
+            }
+            
+            const reverseMultiplyPattern = normalizedFunc.match(/^(-?\d+\.?\d*)\*\(\)$/);
+            if (reverseMultiplyPattern) return parseFloat(reverseMultiplyPattern[1]) * value;
+            
+            return value;
+        }
+        
+        function addScreen() {
+            screenCount++;
+            document.getElementById('screenCount').value = screenCount;
+            generateCalculator();
+        }
+        
+        function removeScreen() {
+            if (screenCount > 2) {
+                screenCount--;
+                document.getElementById('screenCount').value = screenCount;
+                generateCalculator();
+            }
+        }
+        
+        function regenerateCalculator() {
+            screenCount = parseInt(document.getElementById('screenCount').value) || 5;
+            currentVariable = document.getElementById('variable').value;
+            generateCalculator();
+        }
+        
+        function clearResults() {
+            for (let i = 1; i <= screenCount; i++) {
+                const rightInput = document.getElementById(`screen${i}_right`);
+                if (rightInput && i < screenCount) {
+                    rightInput.value = "";
+                    if (i === 1) {
+                        rightInput.className = "solution-field";
+                    } else {
+                        rightInput.className = "result-field";
+                    }
+                }
+            }
+            
+            for (let i = 1; i < screenCount; i++) {
+                const inverseInput = document.getElementById(`inverse${i}`);
+                if (inverseInput) {
+                    inverseInput.value = "";
+                }
+            }
+        }
+        
+        function clearEverything() {
+            for (let i = 1; i <= screenCount; i++) {
+                const leftInput = document.getElementById(`screen${i}_left`);
+                const rightInput = document.getElementById(`screen${i}_right`);
+                
+                if (leftInput && i > 1) {
+                    leftInput.value = "";
+                }
+                if (rightInput) {
+                    rightInput.value = "";
+                    if (i === 1) {
+                        rightInput.className = "solution-field";
+                    } else if (i === screenCount) {
+                        rightInput.className = "final-result";
+                    } else {
+                        rightInput.className = "result-field";
+                    }
+                }
+                
+                const funcInput = document.getElementById(`func${i}`);
+                const inverseInput = document.getElementById(`inverse${i}`);
+                if (funcInput) funcInput.value = "";
+                if (inverseInput) inverseInput.value = "";
+            }
+            
+            document.getElementById('equationDisplay').value = "sec(ln(x-3)) = 1";
+        }
+        
+        function loadExample() {
+            // Cargar el ejemplo sec(ln(x-3)) = 1
+            document.getElementById('func1').value = "()-3";
+            document.getElementById('func2').value = "ln()";
+            document.getElementById('func3').value = "cos()";
+            document.getElementById('func4').value = "()^-1";
+            
+            // Generar automáticamente las inversas
+            document.getElementById('inverse1').value = "()+3";
+            document.getElementById('inverse2').value = "e^()";
+            document.getElementById('inverse3').value = "arccos()";
+            document.getElementById('inverse4').value = "()^-1";
+            
+            // Establecer expresiones en pantallas intermedias
+            document.getElementById('screen2_left').value = "x-3";
+            document.getElementById('screen3_left').value = "ln(x-3)";
+            document.getElementById('screen4_left').value = "cos(ln(x-3))";
+            
+            // Última pantalla
+            document.getElementById(`screen${screenCount}_left`).value = "sec(ln(x-3))";
+            document.getElementById(`screen${screenCount}_right`).value = "1";
+            
+            // Ecuación de display
+            document.getElementById('equationDisplay').value = "sec(ln(x-3)) = 1";
+        }
+        
+        function toggleSymbolPalette() {
+            const palette = document.getElementById('symbolPalette');
+            palette.style.display = palette.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function toggleTheorySection() {
+            const theory = document.getElementById('theorySection');
+            theory.style.display = theory.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function insertSymbol(symbol) {
+            if (currentFocusedInput) {
+                // Si es un input de función, insertar directamente
+                if (currentFocusedInput.id.includes('func') || currentFocusedInput.id.includes('screen') || currentFocusedInput.id === 'equationDisplay') {
+                    const cursorPos = currentFocusedInput.selectionStart || currentFocusedInput.value.length;
+                    const textBefore = currentFocusedInput.value.substring(0, cursorPos);
+                    const textAfter = currentFocusedInput.value.substring(cursorPos);
+                    
+                    currentFocusedInput.value = textBefore + symbol + textAfter;
+                    
+                    // Posicionar el cursor después del símbolo insertado
+                    setTimeout(() => {
+                        currentFocusedInput.focus();
+                        currentFocusedInput.setSelectionRange(cursorPos + symbol.length, cursorPos + symbol.length);
+                    }, 10);
+                    
+                    // Generar automáticamente la función inversa si es una tecla de función
+                    const funcId = currentFocusedInput.id;
+                    const levelMatch = funcId.match(/func(\d+)/);
+                    
+                    if (levelMatch) {
+                        const level = levelMatch[1];
+                        const inverseElement = document.getElementById(`inverse${level}`);
+                        
+                        if (inverseElement) {
+                            const directFunc = currentFocusedInput.value.trim();
+                            const inverseFunc = getInverseFunction(directFunc);
+                            inverseElement.value = inverseFunc;
+                        }
+                    }
+                }
+            } else {
+                alert(`Símbolo ${symbol} copiado. Haz clic en un campo para insertar.`);
+            }
+        }
+        
+        // Event listeners mejorados
+        document.addEventListener('focusin', function(e) {
+            if (e.target.tagName === 'INPUT') {
+                currentFocusedInput = e.target;
+            }
+        });
+        
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.id.includes('func')) {
+                const funcId = e.target.id;
+                const levelMatch = funcId.match(/func(\d+)/);
+                
+                if (levelMatch) {
+                    const level = levelMatch[1];
+                    const inverseElement = document.getElementById(`inverse${level}`);
+                    
+                    if (inverseElement) {
+                        const directFunc = e.target.value.trim();
+                        if (directFunc) {
+                            const inverseFunc = getInverseFunction(directFunc);
+                            inverseElement.value = inverseFunc;
+                        } else {
+                            inverseElement.value = '';
+                        }
+                    }
+                }
+            }
+        });
+        
+        document.getElementById('variable').addEventListener('change', function() {
+            currentVariable = this.value;
+            const firstScreen = document.getElementById('screen1_left');
+            if (firstScreen) {
+                firstScreen.value = currentVariable;
+            }
+        });
+        
+        document.getElementById('screenCount').addEventListener('change', function() {
+            screenCount = parseInt(this.value) || 5;
+            if (screenCount < 2) screenCount = 2;
+            if (screenCount > 10) screenCount = 10;
+            this.value = screenCount;
+            generateCalculator();
+        });
+        
+        // Inicializar
+        window.addEventListener('load', function() {
+            generateCalculator();
+            loadExample();
+        });
+    </script>
+
+</body></html>
